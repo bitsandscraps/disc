@@ -8,6 +8,7 @@ from pathlib import Path
 import time
 from typing import Any
 
+import gymnasium_robotics
 import gymnasium as gym
 import numpy as np
 import torch

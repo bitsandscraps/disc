@@ -11,6 +11,7 @@ dependencies = [
     "torch>=2.2",
     "gymnasium[mujoco]>=1.0",
     "moviepy>=1.0",
+    "gymnasium-robotics[mujoco-py] (>=1.4.2,<2.0.0)",
 ]
 
 [project.scripts]
