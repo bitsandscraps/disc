@@ -12,6 +12,7 @@ import gymnasium_robotics
 import gymnasium as gym
 import numpy as np
 import torch
+from tqdm import trange
 
 from disc_torch.algorithm import (
     LOSS_NAMES,
@@ -162,7 +163,8 @@ def learn(
     alpha_is = 1.0
     tfirststart = time.time()
 
-    for update in range(1, nupdates + 1):
+    pbar = trange(1, nupdates + 1, desc="DISC", unit="update")
+    for update in pbar:
         tstart = time.time()
         frac = 1.0 - (update - 1.0) / nupdates
         lrnow = max(cfg.min_lr, cfg.lr * frac)
@@ -260,6 +262,11 @@ def learn(
 
         tnow = time.time()
         if update % cfg.log_interval == 0 or update == 1:
+            pbar.set_postfix(
+                eprew=safemean([e["r"] for e in epinfobuf]),
+                alpha_is=alpha_is,
+                refresh=False,
+            )
             logger.logkv("adaptive IS loss factor", alpha_is)
             logger.logkv("clipping factor", cfg.epsilon)
             logger.logkv("learning rate", lrnow)
