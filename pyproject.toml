@@ -1,0 +1,44 @@
+[project]
+name = "disc-torch"
+version = "0.1.0"
+description = "PyTorch port of DISC: Dimension-Wise Importance Sampling Weight Clipping (ICML 2019)"
+authors = [{ name = "bitsandscraps" }]
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.11"
+dependencies = [
+    "numpy>=1.26",
+    "torch>=2.2",
+    "gymnasium[mujoco]>=1.0",
+    "moviepy>=1.0",
+]
+
+[project.scripts]
+disc-train = "disc_torch.train:main"
+disc-record = "disc_torch.record:main"
+
+[tool.poetry]
+packages = [{ include = "disc_torch" }]
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.0"
+black = "^24.0"
+mypy = "^1.10"
+pylint = "^3.2"
+pyright = "^1.1"
+
+[tool.black]
+line-length = 80
+
+[tool.mypy]
+ignore_missing_imports = true
+
+[tool.pylint.format]
+max-line-length = 80
+
+[tool.pylint."messages control"]
+disable = ["too-many-arguments", "too-many-locals", "too-many-positional-arguments", "too-many-instance-attributes", "too-many-statements", "too-many-branches", "too-few-public-methods"]
+
+[build-system]
+requires = ["poetry-core>=2.0"]
+build-backend = "poetry.core.masonry.api"
