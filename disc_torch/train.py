@@ -279,7 +279,7 @@ def learn(
             logger.logkv("time_elapsed", tnow - tfirststart)
             for name, value in zip(LOSS_NAMES, lossvals):
                 logger.logkv(name, float(value))
-            logger.dumpkvs()
+            logger.dumpkvs(update * nsteps)
 
         if (
             cfg.save_interval

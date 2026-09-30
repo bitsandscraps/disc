@@ -28,8 +28,13 @@ poetry run disc-train --env Humanoid-v5 --num_timesteps 1e7 --log_dir ./Results/
 
 Options mirror the original TF implementation's `run_disc.py` (`--leng`, `--epsilon`,
 `--epsilon_b`, `--jtarg`, `--gaev`, `--seed`, `--num_timesteps`,
-`--log_dir`). Logs are written to `<log_dir>/seed<seed>/progress.csv` using the
-same keys as the original.
+`--log_dir`). Per-update statistics are written to `<log_dir>/seed<seed>/` as
+TensorBoard scalars (indexed by total timesteps) and as `progress.csv` using the
+same keys as the original; nothing is printed to stdout. View them with
+
+```sh
+poetry run tensorboard --logdir ./Results
+```
 
 Additional options: `--no_eval` skips the deterministic evaluation (10
 episodes after every update, which costs more environment steps than training

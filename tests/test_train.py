@@ -9,6 +9,9 @@ import gymnasium as gym
 import numpy as np
 import pytest
 import torch
+from tensorboard.backend.event_processing.event_accumulator import (
+    EventAccumulator,
+)
 
 from disc_torch.logger import Logger
 from disc_torch.networks import ActorCritic
@@ -86,3 +89,16 @@ def test_learn_smoke(tmp_path: Path, device: str) -> None:
         "00003.pt",
         "00006.pt",
     ]
+
+
+def test_logger_writes_tensorboard(tmp_path: Path) -> None:
+    logger = Logger(tmp_path)
+    for step in (64, 128):
+        logger.logkv("policy_loss", step / 64)
+        logger.dumpkvs(step)
+    logger.close()
+
+    accumulator = EventAccumulator(str(tmp_path))
+    accumulator.Reload()
+    events = accumulator.Scalars("policy_loss")
+    assert [(e.step, e.value) for e in events] == [(64, 1.0), (128, 2.0)]
