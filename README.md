@@ -17,8 +17,12 @@ which was built on [OpenAI Baselines](https://github.com/openai/baselines).
 ## Installation
 
 ```sh
-poetry install
+poetry install          # default PyPI wheels (CUDA build on Linux)
+poetry install -E cpu   # CPU-only wheels, no CUDA libraries
 ```
+
+Requires Poetry 2.5 or newer. Training runs on the CPU unless `--device cuda`
+is passed, so the `cpu` extra is enough for the defaults.
 
 ## Training
 

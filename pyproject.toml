@@ -8,7 +8,12 @@ license = "MIT"
 requires-python = ">=3.11"
 dependencies = [
     "numpy>=1.26",
-    "torch>=2.2",
+    "torch (>=2.2) ; extra != 'cpu'",
+    # Pinned to what torch's cuda-toolkit requires: without these, Poetry
+    # 2.5.1 locks a second, newer version with an overlapping marker and
+    # installs that one. Update them together with torch.
+    "nvidia-cublas (==13.1.1.3) ; extra != 'cpu' and platform_system == 'Linux'",
+    "nvidia-cuda-nvrtc (==13.0.88) ; extra != 'cpu' and platform_system == 'Linux'",
     "gymnasium[mujoco]>=1.0",
     "moviepy>=1.0",
     "gymnasium-robotics[mujoco-py] (>=1.4.2,<2.0.0)",
@@ -16,12 +21,28 @@ dependencies = [
     "tqdm (>=4.70.1,<5.0.0)",
 ]
 
+[project.optional-dependencies]
+# CPU-only torch wheels, without the CUDA libraries: poetry install -E cpu
+cpu = ["torch (>=2.2)"]
+
 [project.scripts]
 disc-train = "disc_torch.train:main"
 disc-record = "disc_torch.record:main"
 
 [tool.poetry]
+requires-poetry = ">=2.5"
 packages = [{ include = "disc_torch" }]
+
+[tool.poetry.dependencies]
+torch = [
+    { markers = "extra != 'cpu'", source = "PyPI" },
+    { markers = "extra == 'cpu'", source = "pytorch-cpu" },
+]
+
+[[tool.poetry.source]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+priority = "explicit"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.0"
