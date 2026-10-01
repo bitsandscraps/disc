@@ -61,7 +61,7 @@ class Config:
     gaev: bool = True
     evaluate: bool = True
     log_interval: int = 1
-    save_final: bool
+    save_final: bool = False
     save_interval: int = 0
     seed: int = 1
 
