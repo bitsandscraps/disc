@@ -61,6 +61,7 @@ class Config:
     gaev: bool = True
     evaluate: bool = True
     log_interval: int = 1
+    save_final: bool
     save_interval: int = 0
     seed: int = 1
 
@@ -304,6 +305,18 @@ def learn(
                 },
                 checkdir / f"{update:05d}.pt",
             )
+    if cfg.save_final and logger.log_dir is not None:
+        checkdir = logger.log_dir / "checkpoints"
+        checkdir.mkdir(parents=True, exist_ok=True)
+        torch.save(
+            {
+                "model": act_model.state_dict(),
+                "ob_rms": runner.ob_rms.state_dict(),
+                "ret_rms": runner.ret_rms.state_dict(),
+                "env_id": env.spec.id if env.spec is not None else None,
+            },
+            checkdir / f"final.pt",
+        )
     return act_model
 
 
@@ -330,6 +343,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument(
         "--no_eval", help="skip deterministic evaluation", action="store_true"
     )
+    parser.add_argument("--save_final", action="store_true")
     parser.add_argument("--save_interval", type=int, default=0)
     parser.add_argument("--load_path", default=None)
     parser.add_argument(
@@ -356,6 +370,7 @@ def main(argv: list[str] | None = None) -> None:
         epsilon_b=args.epsilon_b,
         gaev=bool(args.gaev),
         evaluate=not args.no_eval,
+        save_final=args.save_final,
         save_interval=args.save_interval,
         seed=args.seed,
     )
