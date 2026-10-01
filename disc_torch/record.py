@@ -5,6 +5,7 @@ import os
 from pathlib import Path
 from typing import Any
 
+import gymnasium_robotics
 import gymnasium as gym
 from gymnasium.wrappers import RecordVideo
 import torch
